@@ -2,30 +2,35 @@
     <table class="table table-striped table-borderless table-hover ">
         <thead class="thead-dark">
             <tr>
-                <th scope="col">Tecido</th>
-                <th scope="col" class="text-center">Cor</th>
-                <th scope="col" class="text-center">Folhas</th>
-                <th scope="col" class="text-center">Peso</th>
+                <th scope="col">Referência</th>
+                <th scope="col">Molde</th>
+                <th scope="col" class="text-center">Tamanho</th>
+                <th scope="col" class="text-center">Unidades</th>
+                <!--<th scope="col" class="text-center">Real</th>
+                        <th scope="col" class="text-center">Peso</th>-->
                 <th scope="col" class="text-right">Opções</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($command_fabrics as $command_fabric)
+            @foreach($command_risks as $command_risk)
             <tr>
-                <td class="align-middle">{{ $command_fabric->fabric->name }}</td>
-                <td class="align-middle text-center">{{ $command_fabric->color->name }}</td>
-                <td class="align-middle text-center">{{ $command_fabric->sheets }}</td>
-                <td class="align-middle text-center">@kilo($command_fabric->weight)</td>
+                <td class="align-middle">{{ $command_risk->reference->code }}</td>
+                <td class="align-middle ">{{ $command_risk->shape->name }}</td>
+                <td class="align-middle text-center">{{ $command_risk->size->name }}</td>
+                <td class="align-middle text-center">{{ $command_risk->units }}</td>
                 <td class="text-right">
                     <div class="btn-group" role="group" aria-label="Basic example">
-                        {{ Form::button('<i class="cil-pencil"></i>', ['class' => 'btn btn-secondary', 'wire:click' => 'edit('.$command_fabric->id.')']) }}
-                        {{ Form::button('<i class="cil-trash"></i>', ['class' => 'btn btn-danger', 'data-toggle' => 'modal', 'data-target' => '#commandFabricDestroy'.$command_fabric->id]) }}
+                        {{ Form::button('<i class="cil-pencil"></i>', ['class' => 'btn btn-secondary', 'wire:click' => 'edit('.$command_risk->id.')']) }}
+                        {{ Form::button('<i class="cil-trash"></i>', ['class' => 'btn btn-danger', 'data-toggle' => 'modal', 'data-target' => '#commandFabricDestroy'.$command_risk->id]) }}
+
+
                     </div>
-                    <div class="modal fade" id="commandFabricDestroy{{ $command_fabric->id }}" tabindex="-1" role="dialog" aria-labelledby="commandFabricDestroy{{ $command_fabric->id }}Label" aria-hidden="true">
+
+                    <div class="modal fade" id="commandRiskDestroy{{ $command_risk->id }}" tabindex="-1" role="dialog" aria-labelledby="commandRiskDestroy{{ $command_risk->id }}Label" aria-hidden="true">
                         <div class="modal-dialog modal-smd" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="commandFabricDestroy{{ $command_fabric->id }}Label">Confirmação</h5>
+                                    <h5 class="modal-title" id="commandRiskDestroy{{ $command_risk->id }}Label">Confirmação</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -34,11 +39,12 @@
                                     <p>Este registro sera deletado, caso confirme não tera como recupera-lo posteriormente. Deseja realmente prosseguir?</p>
                                 </div>
                                 <div class="card-footer text-muted d-flex justify-content-between ">
-                                    {{ Form::button('Sim', ['class' => 'btn btn-danger', 'wire:click' => '$emit("commandFabricDestroyHide", '.$command_fabric->id.')']) }}
+                                    {{ Form::button('Sim', ['class' => 'btn btn-danger', 'wire:click' => '$emit("commandFabricDestroyHide", '.$command_risk->id.')']) }}
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </td>
             </tr>
             @endforeach
@@ -54,27 +60,24 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            {{ Form::select('fabric_id', $select_fabric, null, ['class' => 'form-control', 'wire:model' => 'fabric_id', 'disabled']) }}
+                    <div class="form-group">
+                        {{ Form::label('reference_name', 'Referência:', ['class' => 'col-form-label']) }}
+                        {{ Form::text('reference_name', null, ['class' => 'form-control', 'wire:model' => 'reference_name', 'disabled']) }}
+                    </div>
+                    <div class="form-group">
+                        {{ Form::label('shape_name', 'Molde:', ['class' => 'col-form-label']) }}
+                        {{ Form::text('shape_name', null, ['class' => 'form-control', 'wire:model' => 'shape_name', 'disabled']) }}
+                    </div>
+                    <div class="form-group">
+                        {{ Form::label('size_name', 'Tamanho:', ['class' => 'col-form-label']) }}
+                        {{ Form::text('size_name', null, ['class' => 'form-control', 'wire:model' => 'size_name', 'disabled']) }}
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            {{ Form::label('units', 'Unidades:', ['class' => 'col-form-label']) }}
+                            {{ Form::selectRange('units', 0, 30, null, ['class' => 'form-control', 'wire:model' => 'units']) }}
                         </div>
-                        <div class="form-group">
-                            {{ Form::select('color_id', $select_color, null, ['class' => 'form-control', 'wire:model' => 'color_id', 'disabled' => 'disabled']) }}
-                        </div>
-                        <div class="form-group">
-                            {{ Form::label('sheets', 'Número de folhas:', ['class' => 'col-form-label']) }}
-                            @if($errors->get('sheets'))
-                            {{ Form::number('sheets', null, ['class' => 'form-control is-invalid', 'wire:model' => 'sheets']) }}
-                            @else
-                            {{ Form::number('sheets', null, ['class' => 'form-control', 'wire:model' => 'sheets']) }}
-                            @endif
-                            @error('sheets')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     {{ Form::button('Fechar', ['class' => 'btn btn-secondary', 'data-dismiss' => 'modal']) }}
@@ -84,6 +87,7 @@
         </div>
     </div>
 </div>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -101,47 +105,3 @@
         (coreui.Modal.getInstance(document.getElementById('editCommandFabricModal'))).hide();
     });
 </script>
-
-
-<div class="table-responsive">
-            <table class="table table-striped table-borderless table-hover ">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Referência</th>
-                        <th scope="col">Tecido</th>
-                        <th scope="col">Cor</th>
-                        <th scope="col">Molde</th>
-                        <th scope="col" class="text-center">Tamanho</th>
-                        <th scope="col" class="text-center">Unidades</th>
-                        <th scope="col" class="text-center">Real</th>
-                        <th scope="col" class="text-center">Peso</th>
-                        <th scope="col" class="text-right">Opções</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @foreach($command_risks as $command_risk)
-                    <tr>
-                        <td class="align-middle">{{ $command_risk->reference->code }}</td>
-                        <td class="align-middle ">{{ $command_risk->fabric->code }}</td>
-                        <td class="align-middle ">Preto</td>
-                        <td class="align-middle ">Costas</td>
-                        <td class="align-middle text-center">M</td>
-                        <td class="align-middle text-center">5</td>
-                        <td class="align-middle text-center">10</td>
-                        <td class="align-middle text-center">0,454kg</td>
-                        <td class="text-right">
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <a href="{{ route('commands.edit', 1) }}" class="btn btn-secondary"><svg class="c-icon m-0">
-                                        <use xlink:href="/modules/factory/coreui/dist/vendors/@coreui/icons/svg/free.svg#cil-pencil"></use>
-                                    </svg>
-                                </a>
-                                <button type="button" class="btn btn-danger"><svg class="c-icon m-0">
-                                        <use xlink:href="/modules/factory/coreui/dist/vendors/@coreui/icons/svg/free.svg#cil-trash"></use>
-                                    </svg></button>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
