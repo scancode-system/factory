@@ -25,6 +25,7 @@
         "joshbrw/laravel-module-installer": "v0.1.4",
         "laravelcollective/html": "^6.2",
         "livewire/livewire": "^2.2",
-        "nwidart/laravel-modules": "^7.2"
+        "nwidart/laravel-modules": "^7.2",
+        "laravel/fortify": "^1.6"
     }
 }

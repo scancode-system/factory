@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Blade;
 use Modules\Factory\Entities\Command;
 use Modules\Factory\Entities\Produce;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Modules\Factory\Observers\CommandObserver;
 use Modules\Factory\Observers\ProduceObserver;
@@ -53,6 +54,8 @@ class FactoryServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->registerFactories();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+
+        Schema::defaultStringLength(191);
 
         Fortify::loginView(function () {
             return view('factory::auth.login');
