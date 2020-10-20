@@ -1,0 +1,30 @@
+{
+    "name": "scancode-system/factory-module",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Factory\\": ""
+        }
+    },
+    "type": "laravel-module",
+    "require": {
+        "joshbrw/laravel-module-installer": "v0.1.4",
+        "laravelcollective/html": "^6.2",
+        "livewire/livewire": "^2.2",
+        "nwidart/laravel-modules": "^7.2"
+    }
+}
