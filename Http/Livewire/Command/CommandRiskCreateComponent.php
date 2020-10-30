@@ -7,6 +7,7 @@ use Modules\Factory\Entities\Color;
 use Modules\Factory\Entities\Fabric;
 use Modules\Factory\Entities\Command;
 use Modules\Factory\Entities\CommandFabric;
+use Modules\Factory\Entities\CommandFabricCommandRisk;
 use Modules\Factory\Entities\CommandRisk;
 use Modules\Factory\Entities\Produce;
 use Modules\Factory\Entities\Reference;
@@ -50,13 +51,17 @@ class CommandRiskCreateComponent extends Component
         $reference = Reference::find($this->reference_id);
         if ($reference) {
             $shapes = collect([]);
-            foreach ($this->command->command_fabrics as $i => $command_fabric) {
-                $shapes_from_fabrics =  Produce::loadShapeByReferenceAndFabric($reference, $command_fabric->fabric);
-                if($i == 0){
-                    $shapes = $shapes_from_fabrics; 
-                } else {
-                    $shapes = $shapes->intersect($shapes_from_fabrics);
+            if($this->command->command_fabrics()->count() > 0){
+                foreach ($this->command->command_fabrics as $i => $command_fabric) {
+                    $shapes_from_fabrics =  Produce::loadShapeByReferenceAndFabric($reference, $command_fabric->fabric);
+                    if($i == 0){
+                        $shapes = $shapes_from_fabrics; 
+                    } else {
+                        $shapes = $shapes->intersect($shapes_from_fabrics);
+                    }
                 }
+            } else {
+                $shapes = Produce::loadShapeByReference($reference);
             }
             $this->select_shapes = $shapes->pluck('name', 'id');
         }
@@ -70,27 +75,16 @@ class CommandRiskCreateComponent extends Component
             'shape_id' => 'required|integer|min:1|'
         ]);
 
-        //dd($this->units);
-
         foreach($this->units as $size_id => $unit){
             if($unit > 0){
                 $command_risk = CommandRisk::create($validation+['command_id' => $this->command->id, 'size_id' => $size_id, 'units' => $unit]);
             }
         }
-
         $this->emit('messageSuccess', 'Os riscos foram adicionados ao comando com sucesso.');
         $this->dispatchBrowserEvent('closeCreateCommandRiskModal');
         $this->emit('commandEdit');
-
-        /*
-
-        $command_fabric = CommandFabric::create($validation+['command_id' => $this->command->id]);
-            
-        $this->emit('messageSuccess', 'O tecido '.$command_fabric->fabric->name.' da cor '.$command_fabric->color->name.' foi adicionado ao comando com sucesso.');
-        $this->resetComponent();
-        $this->dispatchBrowserEvent('commandFabricCreated');
-        $this->emit('commandEdit');*/
     }
+
 
     public function updated($propertyName)
     {

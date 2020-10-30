@@ -38,4 +38,5 @@ Route::prefix('reference_categories')->middleware('auth')->group(function() {
 Route::prefix('commands')->middleware('auth')->group(function() {
     Route::get('', 'CommandController@index')->name('commands.index');
     Route::get('{command}/edit', 'CommandController@edit')->name('commands.edit');
+    Route::get('{command}/print', 'CommandController@print')->name('commands.print');
 });

@@ -34,10 +34,28 @@ class Produce extends Model
     }
     
     /** repository */
+    public static function loadByReferenceShapeFabric($reference, $shape, $fabric){
+        return Produce::where('reference_id', $reference->id)->where('shape_id', $shape->id)->where('fabric_id', $fabric->id)->first();
+    }
+    
+    public static function loadProduceByReferenceShape($reference, $shape){
+        return Produce::where('reference_id', $reference->id)->where('shape_id', $shape->id)->first();
+    }
+
+    public static function loadByReference($reference){
+        return Produce::where('reference_id', $reference->id)->first();
+    }
+
     public static function loadShapeByReferenceAndFabric($reference, $fabric){
         return Shape::whereHas('produces', function (Builder $query) use($reference, $fabric) {
             $query->where('reference_id', $reference->id)->
             where('fabric_id', $fabric->id);
+        })->get();
+    }
+
+    public static function loadShapeByReference($reference){
+        return Shape::whereHas('produces', function (Builder $query) use($reference) {
+            $query->where('reference_id', $reference->id);
         })->get();
     }
 

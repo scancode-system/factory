@@ -6,8 +6,8 @@
                 <th scope="col">Molde</th>
                 <th scope="col" class="text-center">Tamanho</th>
                 <th scope="col" class="text-center">Unidades</th>
-                <!--<th scope="col" class="text-center">Real</th>
-                        <th scope="col" class="text-center">Peso</th>-->
+                <th scope="col" class="text-left">Peças</th>
+                <!-- <th scope="col" class="text-center">Peso</th>-->
                 <th scope="col" class="text-right">Opções</th>
             </tr>
         </thead>
@@ -18,10 +18,21 @@
                 <td class="align-middle ">{{ $command_risk->shape->name }}</td>
                 <td class="align-middle text-center">{{ $command_risk->size->name }}</td>
                 <td class="align-middle text-center">{{ $command_risk->units }}</td>
+                <td class="align-middle text-left">
+                    <table>
+                    @foreach($command_risk->command_fabric_command_risks as $command_fabric_command_risk)
+                    <tr>
+                        <td>{{ $command_fabric_command_risk->command_fabric->fabric->name }} - {{ $command_fabric_command_risk->command_fabric->color->name }}</td>
+                        <td>{{ $command_fabric_command_risk->real }}</td>
+                        <td>@kilo( $command_fabric_command_risk->weight*$command_fabric_command_risk->real )</td>
+                    </tr>
+                    @endforeach
+                    </table>
+                </td>
                 <td class="text-right">
                     <div class="btn-group" role="group" aria-label="Basic example">
-                        {{ Form::button('<i class="cil-pencil"></i>', ['class' => 'btn btn-secondary', 'wire:click' => 'edit('.$command_risk->id.')']) }}
-                        {{ Form::button('<i class="cil-trash"></i>', ['class' => 'btn btn-danger', 'data-toggle' => 'modal', 'data-target' => '#commandFabricDestroy'.$command_risk->id]) }}
+                        {{ Form::button('<i class="cil-pencil"></i>', ['class' => 'btn btn-secondary', 'wire:click' => 'editCommandRisk('.$command_risk->id.')']) }}
+                        {{ Form::button('<i class="cil-trash"></i>', ['class' => 'btn btn-danger', 'data-toggle' => 'modal', 'data-target' => '#commandRiskDestroy'.$command_risk->id]) }}
 
 
                     </div>
@@ -39,7 +50,7 @@
                                     <p>Este registro sera deletado, caso confirme não tera como recupera-lo posteriormente. Deseja realmente prosseguir?</p>
                                 </div>
                                 <div class="card-footer text-muted d-flex justify-content-between ">
-                                    {{ Form::button('Sim', ['class' => 'btn btn-danger', 'wire:click' => '$emit("commandFabricDestroyHide", '.$command_risk->id.')']) }}
+                                    {{ Form::button('Sim', ['class' => 'btn btn-danger', 'wire:click' => '$emit("commandRiskDestroyHide", '.$command_risk->id.')']) }}
                                 </div>
                             </div>
                         </div>
@@ -50,7 +61,7 @@
             @endforeach
         </tbody>
     </table>
-    <div wire:ignore.self class="modal fade" id="editCommandFabricModal" tabindex="-1" role="dialog" aria-labelledby="editFabricModalLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="editCommandRiskModal" tabindex="-1" role="dialog" aria-labelledby="editFabricModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -91,17 +102,17 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        Livewire.on('commandFabricDestroyHide', command_fabric_id => {
-            (coreui.Modal.getInstance(document.getElementById('commandFabricDestroy' + command_fabric_id))).hide();
-            Livewire.emit('destroy', command_fabric_id);
+        Livewire.on('commandRiskDestroyHide', command_risk_id => {
+            (coreui.Modal.getInstance(document.getElementById('commandRiskDestroy' + command_risk_id))).hide();
+            Livewire.emit('destroyCommandRisk', command_risk_id);
         });
     });
 
-    window.addEventListener('openEditCommandFabricModal', event => {
-        (new coreui.Modal(document.getElementById('editCommandFabricModal'), {})).show();
+    window.addEventListener('openEditCommandRiskModal', event => {
+        (new coreui.Modal(document.getElementById('editCommandRiskModal'), {})).show();
     });
 
-    window.addEventListener('editCommandFabricModalClose', event => {
-        (coreui.Modal.getInstance(document.getElementById('editCommandFabricModal'))).hide();
+    window.addEventListener('closeEditCommandRiskModal', event => {
+        (coreui.Modal.getInstance(document.getElementById('editCommandRiskModal'))).hide();
     });
 </script>

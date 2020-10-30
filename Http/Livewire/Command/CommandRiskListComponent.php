@@ -9,7 +9,7 @@ use Modules\Factory\Entities\CommandRisk;
 class CommandRiskListComponent extends Component
 {
 
-    protected $listeners = ['commandEdit' => 'resetComponent', 'destroy'];
+    protected $listeners = ['commandEdit' => 'resetComponent', 'destroyCommandRisk'];
 
     public $command;
     public $command_risks;
@@ -26,10 +26,10 @@ class CommandRiskListComponent extends Component
         $this->resetComponent();
     }
 
-    public function edit(CommandRisk $command_risk){
+    public function editCommandRisk(CommandRisk $command_risk){
         $this->command_risk = $command_risk;
         $this->command_risk_id = $command_risk->id;
-        $this->reference_name = $command_risk->reference->name;
+        $this->reference_name = $command_risk->reference->code;
         $this->shape_name = $command_risk->shape->name;
         $this->size_name = $command_risk->size->name;
         $this->units = $command_risk->units;
@@ -49,7 +49,7 @@ class CommandRiskListComponent extends Component
         $this->dispatchBrowserEvent('closeEditCommandRiskModal');
     }
 
-    public function destroy(CommandRisk $command_risk){
+    public function destroyCommandRisk(CommandRisk $command_risk){
         $command_risk->delete();
         $this->emit('messageSuccess', 'Risco excluído com sucesso.');
         $this->emit('commandEdit');

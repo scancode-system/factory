@@ -29,6 +29,16 @@ class CommandRisk extends Model
         return $this->belongsTo(Size::class);
     }
 
+    public function command_fabric_command_risks()
+    {
+        return $this->hasMany(CommandFabricCommandRisk::class);
+    }
+    
+    /* mutators */
+    public function getProduceAttribute($value)
+    {
+        return Produce::loadProduceByReferenceShape($this->reference, $this->shape);
+    }
 
     /* repository */
     public static function loadByCommand(Command $command)

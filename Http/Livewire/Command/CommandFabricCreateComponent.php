@@ -6,11 +6,14 @@ use Livewire\Component;
 use Modules\Factory\Entities\Color;
 use Modules\Factory\Entities\Fabric;
 use Modules\Factory\Entities\Command;
+use Modules\Factory\Entities\Produce;
+use Modules\Factory\Entities\CommandRisk;
 use Modules\Factory\Entities\CommandFabric;
+use Modules\Factory\Entities\CommandFabricCommandRisk;
 
 class CommandFabricCreateComponent extends Component
 {
-   
+
     protected $listeners = ['commandEdit' => 'resetComponent'];
 
     public $command;
@@ -22,7 +25,8 @@ class CommandFabricCreateComponent extends Component
         'fabric_id.unique' => 'Já existe este tecido para este comando com esta cor.'
     ];*/
 
-    public function mount(Command $command){
+    public function mount(Command $command)
+    {
         $this->command = $command;
     }
 
@@ -33,10 +37,10 @@ class CommandFabricCreateComponent extends Component
             'color_id' => 'required|integer|min:1|',
             'sheets' => 'required|integer|min:1'
         ]);
+    
+        $command_fabric = CommandFabric::create($validation + ['command_id' => $this->command->id]);
 
-        $command_fabric = CommandFabric::create($validation+['command_id' => $this->command->id]);
-            
-        $this->emit('messageSuccess', 'O tecido '.$command_fabric->fabric->name.' da cor '.$command_fabric->color->name.' foi adicionado ao comando com sucesso.');
+        $this->emit('messageSuccess', 'O tecido ' . $command_fabric->fabric->name . ' da cor ' . $command_fabric->color->name . ' foi adicionado ao comando com sucesso.');
         $this->resetComponent();
         $this->dispatchBrowserEvent('commandFabricCreated');
         $this->emit('commandEdit');
@@ -45,16 +49,38 @@ class CommandFabricCreateComponent extends Component
     public function updated($propertyName)
     {
         $this->validateOnly($propertyName, [
-            'fabric_id' => 'required|integer|min:1|', 
+            'fabric_id' => 'required|integer|min:1|',
             'color_id' => 'required|integer|min:1|',
             'sheets' => 'required|integer|min:1'
         ]);
     }
 
+    private function loadSelectFabrics()
+    {
+        $fabrics = Fabric::all();
+        $select_fabric = collect([]);
+        $command_risks = $this->command->command_risks;
+
+        foreach ($fabrics as $fabric) {
+            $have_produces = true;
+            foreach ($command_risks as $command_risk) {
+                if (!Produce::loadByReferenceShapeFabric($command_risk->reference, $command_risk->shape, $fabric)) {
+                    $have_produces = false;
+                }
+            }
+            if($have_produces){
+                $select_fabric->push($fabric);
+            }
+        }
+
+        $select_fabric = $select_fabric->pluck('name', 'id');
+        $select_fabric->prepend('Selecione um tecido', null);
+        return $select_fabric;
+    }
+
     public function render()
     {
-        $select_fabric = Fabric::all()->pluck('name', 'id');
-        $select_fabric->prepend('Selecione um tecido', null);
+        $select_fabric = $this->loadSelectFabrics();
 
         $select_color = Color::all()->pluck('name', 'id');
         $select_color->prepend('Selecione uma cor', null);
@@ -62,8 +88,8 @@ class CommandFabricCreateComponent extends Component
         return view('factory::livewire.command.command-fabric-create-component', ['select_fabric' => $select_fabric, 'select_color' => $select_color]);
     }
 
-    public function resetComponent(){
+    public function resetComponent()
+    {
         $this->reset(['fabric_id', 'color_id', 'sheets']);
     }
-
 }

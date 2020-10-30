@@ -11,7 +11,7 @@ use Modules\Factory\Entities\CommandFabric;
 class CommandFabricListComponent extends Component
 {
 
-    protected $listeners = ['commandEdit' => 'resetComponent', 'destroy'];
+    protected $listeners = ['commandEdit' => 'resetComponent', 'destroyCommandFabric'];
 
     public $command;
     public $command_fabrics;
@@ -27,14 +27,14 @@ class CommandFabricListComponent extends Component
         $this->resetComponent();
     }
 
-    public function edit(CommandFabric $command_fabric){
+    public function editCommandFabric(CommandFabric $command_fabric){
         $this->command_fabric = $command_fabric;
         $this->command_fabric_id = $command_fabric->id;
         $this->fabric_id = $command_fabric->fabric_id;
         $this->color_id = $command_fabric->color_id;
         $this->sheets = $command_fabric->sheets;
         $this->dispatchBrowserEvent('openEditCommandFabricModal');
-    }
+    } 
 
     public function update()
     {
@@ -47,13 +47,15 @@ class CommandFabricListComponent extends Component
         $this->emit('messageSuccess', 'O tecido '.$this->command_fabric->fabric->name.' da cor '.$this->command_fabric->color->name.' foi atualizado.');
         $this->emit('commandEdit');
         $this->dispatchBrowserEvent('editCommandFabricModalClose');
+
     }
 
-    public function destroy(CommandFabric $command_fabric){
+    public function destroyCommandFabric(CommandFabric $command_fabric){
         $command_fabric->delete();
         $this->emit('messageSuccess', 'Tecido removido do comando com sucesso.');
         $this->emit('commandEdit');
     }
+
 
     public function render()
     {

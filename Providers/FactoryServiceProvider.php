@@ -10,9 +10,12 @@ use Modules\Factory\Entities\Produce;
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Modules\Factory\Entities\CommandFabric;
+use Modules\Factory\Entities\CommandRisk;
 use Modules\Factory\Observers\CommandObserver;
 use Modules\Factory\Observers\ProduceObserver;
 use Modules\Factory\Http\Livewire\AlertComponent;
+use Modules\Factory\Observers\CommandFabricObserver;
 use Modules\Factory\Http\Livewire\Color\ColorCrudComponent;
 use Modules\Factory\Http\Livewire\Command\CommandComponent;
 use Modules\Factory\Http\Livewire\Produce\ProduceComponent;
@@ -28,7 +31,7 @@ use Modules\Factory\Http\Livewire\Command\CommandFabricListComponent;
 use Modules\Factory\Http\Livewire\Command\CommandRiskCreateComponent;
 use Modules\Factory\Http\Livewire\Command\CommandFabricCreateComponent;
 use Modules\Factory\Http\Livewire\Reference\ReferenceCategoryComponent;
-
+use Modules\Factory\Observers\CommandRiskObserver;
 
 class FactoryServiceProvider extends ServiceProvider
 {
@@ -102,6 +105,8 @@ class FactoryServiceProvider extends ServiceProvider
         
         Produce::observe(ProduceObserver::class);
         Command::observe(CommandObserver::class);
+        CommandFabric::observe(CommandFabricObserver::class);
+        CommandRisk::observe(CommandRiskObserver::class);
 
     }
 
@@ -128,6 +133,10 @@ class FactoryServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             module_path($this->moduleName, 'Config/config.php'), $this->moduleNameLower
         );
+
+        $this->publishes([
+            module_path($this->moduleName, 'Config/snappy.php') => config_path('snappy.php'),
+        ], 'config');
     }
 
     /**

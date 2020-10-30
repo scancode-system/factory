@@ -5,7 +5,7 @@
                 <th scope="col">Tecido</th>
                 <th scope="col" class="text-center">Cor</th>
                 <th scope="col" class="text-center">Folhas</th>
-                <th scope="col" class="text-center">Peso</th>
+                <th scope="col" class="text-center">Previsão</th>
                 <th scope="col" class="text-right">Opções</th>
             </tr>
         </thead>
@@ -15,10 +15,10 @@
                 <td class="align-middle">{{ $command_fabric->fabric->name }}</td>
                 <td class="align-middle text-center">{{ $command_fabric->color->name }}</td>
                 <td class="align-middle text-center">{{ $command_fabric->sheets }}</td>
-                <td class="align-middle text-center">@kilo($command_fabric->weight)</td>
+                <td class="align-middle text-center">@kilo($command_fabric->prevision)</td>
                 <td class="text-right">
                     <div class="btn-group" role="group" aria-label="Basic example">
-                        {{ Form::button('<i class="cil-pencil"></i>', ['class' => 'btn btn-secondary', 'wire:click' => 'edit('.$command_fabric->id.')']) }}
+                        {{ Form::button('<i class="cil-pencil"></i>', ['class' => 'btn btn-secondary', 'wire:click' => 'editCommandFabric('.$command_fabric->id.')']) }}
                         {{ Form::button('<i class="cil-trash"></i>', ['class' => 'btn btn-danger', 'data-toggle' => 'modal', 'data-target' => '#commandFabricDestroy'.$command_fabric->id]) }}
                     </div>
                     <div class="modal fade" id="commandFabricDestroy{{ $command_fabric->id }}" tabindex="-1" role="dialog" aria-labelledby="commandFabricDestroy{{ $command_fabric->id }}Label" aria-hidden="true">
@@ -89,7 +89,7 @@
     document.addEventListener("DOMContentLoaded", function() {
         Livewire.on('commandFabricDestroyHide', command_fabric_id => {
             (coreui.Modal.getInstance(document.getElementById('commandFabricDestroy' + command_fabric_id))).hide();
-            Livewire.emit('destroy', command_fabric_id);
+            Livewire.emit('destroyCommandFabric', command_fabric_id);
         });
     });
 

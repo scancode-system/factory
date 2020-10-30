@@ -25,7 +25,7 @@ class CreateProducesTable extends Migration
             $table->unsignedBigInteger('shape_id');
             $table->foreign('shape_id')->references('id')->on('shapes')->onDelete('restrict')->onUpdate('restrict');
 
-            $table->unique(['fabric_id', 'shape_id']);
+            $table->unique(['reference_id','fabric_id', 'shape_id']);
 
             $table->decimal('length', 10, 2);
             $table->integer('units');
