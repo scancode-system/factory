@@ -22,7 +22,7 @@ class CreateCommandFabricCommandRiskTable extends Migration
             $table->unsignedBigInteger('command_risk_id');
             $table->foreign('command_risk_id')->references('id')->on('command_risks')->onDelete('cascade')->onUpdate('cascade');
 
-            $table->unique(['command_fabric_id', 'command_risk_id']);
+            $table->unique(['command_fabric_id', 'command_risk_id'], 'command_risk_fabric_unique');
 
             $table->decimal('weight', 10, 2);
             $table->decimal('price', 10, 2);
