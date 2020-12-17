@@ -58,6 +58,7 @@ class FabricCrudComponent extends Component
             'price' => 'required|numeric|min:0|regex:/^\d+(\.\d{1,2})?$/'
         ]);
         $fabric->update($validation);
+        $this->fabric = $fabric;
         $this->emit('alertComponentSuccess', 'Tecido <strong>' . $fabric->name . '</strong> atualizado(a) com sucesso.');
         $this->resetComponent();
     }

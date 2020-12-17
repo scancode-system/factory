@@ -19,11 +19,11 @@ class CommandFabricCreateComponent extends Component
     public $command;
     public $fabric_id;
     public $color_id;
-    public $sheets;
+    public $sheets; 
 
-    /*protected $messages = [
+    protected $messages = [
         'fabric_id.unique' => 'Já existe este tecido para este comando com esta cor.'
-    ];*/
+    ];
 
     public function mount(Command $command)
     {
@@ -32,8 +32,10 @@ class CommandFabricCreateComponent extends Component
 
     public function store()
     {
+        //dd($this->command->id);
         $validation = $this->validate([
-            'fabric_id' => 'required|integer|min:1', //|unique:command_fabrics,fabric_id,null,id,color_id,'.$this->color_id,',command_id,'.$this->command->id,
+            //'fabric_id' => 'required|integer|min:1', //|unique:command_fabrics,fabric_id,null,id,color_id,'.$this->color_id,',command_id,'.$this->command->id,
+            'fabric_id' => 'required|integer|min:1|unique:command_fabrics,fabric_id,null,id,fabric_id,'.$this->fabric_id.',color_id,'.$this->color_id.',command_id,'.$this->command->id,
             'color_id' => 'required|integer|min:1|',
             'sheets' => 'required|integer|min:1'
         ]);

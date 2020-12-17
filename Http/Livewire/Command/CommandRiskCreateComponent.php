@@ -28,6 +28,10 @@ class CommandRiskCreateComponent extends Component
     public $shape_id;
     public $units;
 
+    protected $messages = [
+        'reference.unique' => 'Já existe esta referência com este molde e tamanho neste comando.'
+    ];
+
     public function mount(Command $command)
     {
         $this->command = $command;
@@ -77,6 +81,13 @@ class CommandRiskCreateComponent extends Component
 
         foreach($this->units as $size_id => $unit){
             if($unit > 0){
+                $validation_unique = $this->validate([
+                    'reference_id' => 'unique:command_risks,reference_id,null,id,reference_id,'.$this->reference_id.',shape_id,'.$this->shape_id.',command_id,'.$this->command->id.',size_id,'.$size_id,
+
+//                    'fabric_id' => 'required|integer|min:1|unique:command_fabrics,fabric_id,null,id,fabric_id,'.$this->fabric_id.',color_id,'.$this->color_id.',command_id,'.$this->command->id,
+                ]);
+
+
                 $command_risk = CommandRisk::create($validation+['command_id' => $this->command->id, 'size_id' => $size_id, 'units' => $unit]);
             }
         }

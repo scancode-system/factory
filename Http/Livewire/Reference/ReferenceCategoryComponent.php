@@ -45,6 +45,7 @@ class ReferenceCategoryComponent extends Component
     {
         $validation = $this->validate(['name' => 'required|unique:reference_categories,name,' . $reference_category->id]);
         $reference_category->update($validation);
+        $this->reference_category = $reference_category;
         $this->emit('alertComponentSuccess', 'Categoria da Referência <strong>' . $reference_category->name . '</strong> atualizado com sucesso.');
         $this->resetComponent();
     }

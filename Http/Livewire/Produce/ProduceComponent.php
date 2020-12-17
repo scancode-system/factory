@@ -26,7 +26,7 @@ class ProduceComponent extends Component
     public $units;
 
     protected $listeners = ['destroy'];
-    //protected $messages = ['fabric_id.unique' => 'Já existe um rendimento com este tecido e com este molde.'];
+    protected $messages = ['fabric_id.unique' => 'Já existe um rendimento com este tecido e com este molde.'];
 
     public function mount(Reference $reference)
     {
@@ -45,7 +45,8 @@ class ProduceComponent extends Component
     {
         $validation = $this->validate([
             'reference_id' => 'required|integer|min:0',
-            'fabric_id' => 'required|integer|min:1', //|unique:produces,fabric_id,null,id,shape_id,' . $this->shape_id,
+            //'fabric_id' => 'required|integer|min:1', //|unique:produces,fabric_id,null,id,shape_id,' . $this->shape_id,
+            'fabric_id' => 'required|integer|min:1|unique:produces,fabric_id,null,id,fabric_id,'.$this->fabric_id.',shape_id,' . $this->shape_id.',reference_id,' . $this->reference_id,
             'shape_id' => 'required|integer|min:1',
             'length' => 'required|numeric|min:0|regex:/^\d+(\.\d{1,2})?$/',
             'units' => 'required|integer|min:1'
@@ -66,7 +67,8 @@ class ProduceComponent extends Component
     public function update(Produce $produce2){
         $validation = $this->validate([
             'reference_id' => 'required|integer|min:0',
-            'fabric_id' => 'required|integer|min:1', //|unique:produces,fabric_id,'.$produce2->id.',id,shape_id,' . $this->shape_id,
+            //'fabric_id' => 'required|integer|min:1', //|unique:produces,fabric_id,'.$produce2->id.',id,shape_id,' . $this->shape_id,
+            'fabric_id' => 'required|integer|min:1|unique:produces,fabric_id,'.$produce2->id.',id,fabric_id,'.$this->fabric_id.',shape_id,' . $this->shape_id.',reference_id,' . $this->reference_id,
             'shape_id' => 'required|integer|min:1',
             'length' => 'required|numeric|min:0|regex:/^\d+(\.\d{1,2})?$/',
             'units' => 'required|integer|min:1'
